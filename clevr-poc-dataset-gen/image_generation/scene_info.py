@@ -1,7 +1,7 @@
 import random, sys
 #sys.path.append("/home/code/clevr-poc/clevr-dataset-gen-main/image_generation")
 
-from  constraint import *
+#from  constraint import *
 
 class Region:
     def __init__(self, x_range=None, y_range=None, index=None, constraints=None, properties=None):

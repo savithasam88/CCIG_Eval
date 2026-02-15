@@ -5,8 +5,10 @@ import gc
 import pickle
 
 from pathlib import Path
-path_root = Path(__file__).parents[1]
-path_current = Path(__file__).parents[0]
+file_path = Path(__file__).resolve()
+path_current = file_path.parents[0]
+path_root = file_path.parents[1]
+
 sys.path.append(str(path_root))
 sys.path.append(str(path_current))
 
@@ -19,7 +21,7 @@ from question_generation.generate_questions import generate_question
 
 
 VERY_LARG_NUMBER = 1000000
-
+ 
 INSIDE_BLENDER = True
 try:
   import bpy, bpy_extras
@@ -73,11 +75,11 @@ def main(args):
   
 
   complete_scene_dir, complete_img_template, complete_scene_template = directory_management(args.complete_data_dir)
-  incomplete_scene_dir, incomplete_img_template, incomplete_scene_template = directory_management(args.incomplete_data_dir)
+  #incomplete_scene_dir, incomplete_img_template, incomplete_scene_template = directory_management(args.incomplete_data_dir)
 
-  question_dir = os.path.join(args.incomplete_data_dir, args.question_dir, args.split)
-  if not os.path.isdir(question_dir):
-    os.makedirs(question_dir) 
+  #question_dir = os.path.join(args.incomplete_data_dir, args.question_dir, args.split)
+  #if not os.path.isdir(question_dir):
+  #  os.makedirs(question_dir) 
 
   num_digits = 6
   prefix = '%s_' % (args.filename_prefix)
@@ -100,7 +102,7 @@ def main(args):
 
  
 
-  if args.phase_constraint == 1:
+  if args.phase_constraint == 1: ## to create env
     num_images = args.num_constraint_types
     possible_num_objects = [i for i in range(args.min_objects, args.max_objects+1)]
 
@@ -111,7 +113,7 @@ def main(args):
     max_number_of_env_per_numObj = args.num_constraint_types/len(num_env_per_numObj)
     env_id = 0
     
-  else:
+  else: 
     print('Loading environments...')
     num_images = args.num_images
     #Load env details - give path!!
@@ -270,7 +272,8 @@ def main(args):
                 print("Scene graph for image ",i, " created!!")
 
 
-
+                '''
+                #Use this only if you want to render the scenes
                 complete_scene, incomplete_scene = render_scene(args,
                   complete_scene_graph=complete_scene_graph,
                   incomplete_scene_graph=incomplete_scene_graph,
@@ -281,7 +284,7 @@ def main(args):
                   constraint_type_index=constraint_type_index,
                   phase = args.phase_constraint
                 )
-
+                '''
                 #if complete_scene == None and constraint_type_index == 24:
                 #    input(complete_scene_graph)
     
