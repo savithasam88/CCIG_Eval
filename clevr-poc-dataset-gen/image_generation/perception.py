@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from collections import Counter
 file_path = Path(__file__).resolve()
 path_current = file_path.parents[0]
 path_root = file_path.parents[1]
@@ -7,6 +8,7 @@ sys.path.append(".")
 sys.path.append(str(path_root))
 sys.path.append(str(path_current))
 
+from skimage import color
 import random
 from dataclasses import dataclass
 from typing import Any, List, Dict, Optional, Union, Tuple
@@ -88,13 +90,14 @@ CLEVR_SIZES = {
     "small": 0.39
 }
 
-REGIONS = {
-    "0": {"x": [-240, 0], "y": [0, 160]}, #  {"x": [-5, 0], "y": [0, 5]},
-    "1": {"x": [0.5, 240], "y": [0, 160]},
-    "2": {"x": [-240, 0], "y": [-160, 0]},
-    "3": {"x": [0.5, 240], "y": [-160, 0]}
-}
 
+REGIONS = {
+    "0": {"x": [0, 240], "y": [0, 160]}, 
+    "1": {"x": [240, 480], "y": [0, 160]},
+    "2": {"x": [0, 240], "y": [160, 320]},
+    "3": {"x": [240, 480], "y": [160, 320]}
+    }
+    
 
 def mask_to_polygon(mask: np.ndarray) -> List[List[int]]:
     # Find contours in the binary mask
@@ -423,14 +426,50 @@ def plot_detections_plotly(
     # Show plot
     fig.show()
 
-# Function to find closest color in CLEVR_COLORS
-def closest_color(avg_color):
-    avg_color = np.round(avg_color * 255).astype(np.uint8)
-    # Calculate Euclidean distance between avg_color and all CLEVR colors
-    color_distances = cdist([avg_color], list(CLEVR_COLORS.values()))
-    closest_idx = np.argmin(color_distances)
-    closest_color_name = list(CLEVR_COLORS.keys())[closest_idx]
-    return closest_color_name
+
+def rgb_to_lab(rgb):
+    """Convert RGB color to CIELAB color space."""
+    # Skimage expects the input in [0, 1] range for RGB
+    rgb = np.array(rgb)
+    rgb_normalized = rgb / 255.0
+    lab = color.rgb2lab(rgb_normalized.reshape(1, 1, 3))
+    return lab.reshape(3)
+
+def delta_e_lab(color1, color2):
+    """Calculate Delta E (CIE76) between two colors in CIELAB space."""
+    lab1 = rgb_to_lab(color1)
+    lab2 = rgb_to_lab(color2)
+    return np.linalg.norm(lab1 - lab2)
+
+def closest_color(input_color):
+    """Find the closest color name in CLEVR_COLORS using Delta E."""
+    min_delta_e = float('inf')
+    closest_color_name = None
+    
+    # Loop through the CLEVR_COLORS dictionary and calculate Delta E for each color
+    for color_name, color_value in CLEVR_COLORS.items():
+        delta_e = delta_e_lab(input_color, color_value)
+        if delta_e < min_delta_e:
+            min_delta_e = delta_e
+            closest_color_name = color_name
+    
+    return closest_color_name, min_delta_e
+
+
+# Function to find closest color in CLEVR_COLORS: euclidean
+def eucl_closest_color(input_color):
+    
+    # Calculate the Euclidean distance between the input color and each color in CLEVR_COLORS
+    distances = {}
+    for color_name, color_value in CLEVR_COLORS.items():
+        distance = np.linalg.norm(input_color - color_value)  # Euclidean distance
+        distances[color_name] = distance
+    
+    # Find the color with the smallest distance
+    closest = min(distances, key=distances.get)
+    
+    return closest
+
 
 # Function to classify size based on the polygon area
 def classify_size(area):
@@ -446,12 +485,9 @@ def classify_region(x, y):
     image_width = 480
     image_height = 320
     
-    x_mapped = (x/image_height)*10 - 5
-    y_mapped = (y/image_width)*10 - 5
     for region_id, region in REGIONS.items():
-        if region["x"][0] <= x_mapped <= region["x"][1] and region["y"][0] <= y_mapped <= region["y"][1]:
+        if region["x"][0] <= x < region["x"][1] and region["y"][0] <= y < region["y"][1]:
             return region_id
-    return "Unknown"  # If it doesn't fit into any region
 
 def geometry_shape(mask, area_bbox2):
 
@@ -600,28 +636,7 @@ def main(args):
         box = detection.box
         score = detection.score
         mask = detection.mask
-        '''
-        present = False
-        p_s = 0
-        p_b = None
-        for bb_score in bboxes:
-            bb = bb_score[0]
-            if bbox_iou(bb, box)> 0.2:
-                p_s = bb_score[1]
-                p_b = bb
-                present = True
-                break
         
-        if present:
-            if p_s>=score:
-                continue 
-            else:
-                bboxes.remove((p_b, p_s))
-
-        
-        
-        bboxes.append((box,score))       
-        '''
         min_x = box.xmin
         min_y = box.ymin
         max_x = box.xmax
@@ -633,48 +648,44 @@ def main(args):
         rr, cc = skpolygon(polygon[:, 1], polygon[:, 0], polygon_mask.shape)
         polygon_mask[rr, cc] = 1
         masked_image = image_array * np.expand_dims(polygon_mask, axis=-1)
-        masked_image_det = masked_image.astype(np.uint8)  # ensure correct dtype
+        masked_image_det = np.clip(masked_image, 0, 255).astype(np.uint8) #masked_image.astype(np.uint8)  # ensure correct dtype
         masked_image_det = Image.fromarray(masked_image_det)
+        masked_image_pil = np.clip(masked_image, 0, 255).astype(np.uint8)
         
         dino_shape_detections = detect(masked_image_det, labels_shape, threshold, detector)
-        dino_color_detections = detect(masked_image_det, CLEVR_COLORS_LIST, threshold, detector)
+        #dino_color_detections = detect(masked_image_det, CLEVR_COLORS_LIST, threshold, detector)
         dino_material_detections = detect(masked_image_det, labels_material, threshold, detector)
 
         # Using max() to get the detection with the highest score
         det_shape = max(dino_shape_detections, key=lambda x: x.score, default=None)
-        det_color = max(dino_color_detections, key=lambda x: x.score, default=None)
+        #det_color = max(dino_color_detections, key=lambda x: x.score, default=None)
         det_mat = max(dino_material_detections, key=lambda x: x.score, default=None)
         #for idx, det in enumerate(dino_scm_detections):
         shape_label = det_shape.label
         shape_score = det_shape.score
 
-        color_label = det_color.label
-        color_score = det_color.score
-
         material_label = det_mat.label
         material_score = det_mat.score
 
-        #color_label = scm_label.split(' ')[0]
-        #material_label = scm_label.split(' ')[1]
-        #shape_label = scm_label.split(' ')[2]
-
+        
         
         masked_pixels = masked_image[polygon_mask == 1]
-        masked_image_pil = np.clip(masked_image, 0, 255).astype(np.uint8)
-        
+        # If masked_pixels is a 3D array (height, width, channels), reshape it to (num_pixels, channels)
+        masked_pixels_reshaped = masked_pixels.reshape(-1, masked_pixels.shape[-1])
+        # Convert the reshaped array into a tuple of pixel values (for counting occurrences)
+        pixel_tuple = [tuple(pixel) for pixel in masked_pixels_reshaped]
+        # Use Counter to find the most common color
+        color_counts = Counter(pixel_tuple)
+        # Find the most common color (i.e., the one with the highest count)
+        most_common_color, count = color_counts.most_common(1)[0]
+        color_label = closest_color(most_common_color)
         
         
         plt.imsave(save_pol1+'_'+str(idx)+'.png', masked_image_pil)
         plt.imsave(save_pol+'_'+str(idx)+'.png', polygon_mask, cmap = 'gray')
         
-        # Shape: Calculate bounding box for aspect ratio calculation
-        #shape_label = geometry_shape(polygon_mask, box)
-        
         # Size: Calculate area from the polygon mask (using regionprops)
         size_label = estimate_size(box)
-
-
-        
 
         #Calculate region classification based on bounding box center
         bbox_center_x = (min_x + max_x) / 2
@@ -687,13 +698,7 @@ def main(args):
         region_label = classify_region(bbox_center_x, bbox_center_y)
 
         objects.append({"pixel_coords": bbdet, "color": color_label, "material": material_label, "shape": shape_label, "size": size_label, "region": region_label})
-        # Output the results
-        #print(f"Detection {idx+1}:")
-        #print(f"Label: {label}, Score: {score:.2f}")
-        #print(f"Size: {label}, Shape: {shape_label}, Color: {color_label}, Material: {material_label}, Score: {shape_score} {color_score} {material_score} {score}")
-        #print(f"Region: {region_label}")
-        #print('BB centre:', bbox_center_x, bbox_center_y)
-        
+                
     print('Len of objects:', len(objects))
     scene_graph = {"image_id": image_url, "objects": objects}
     for o in objects:
