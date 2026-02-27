@@ -190,7 +190,7 @@ def create_pipeline_and_processor(detector_id: Optional[str] = None, segmenter_i
 def detect(
     image: Image.Image,
     labels: List[str],
-    threshold: float = 0.7,
+    threshold: float = 0.3,
     object_detector: Optional = None #detector_id: Optional[str] = None
 ) -> List[Dict[str, Any]]:
     """
@@ -578,10 +578,9 @@ def main(args):
     save_pol1 = "/users/sbsh670/archive/clevr/CLEVR_v1.0/images/val/0_pol1"
     image_url = "/users/sbsh670/archive/clevr/CLEVR_v1.0/images/val/CLEVR_val_000000.png"
     labels = ['sphere .', 'cube .', 'cylinder .']
-    labels_size = ['size is relatively small .', 'size is large .']
-    labels_shape = ['cube, all faces are squares, equal sides, sharp corners .', 'cylinder, round base, straight sides .', 'sphere, round in all directions, ball .'] 
-    labels_color = ['color of object is gray .', 'color of object is red .', 'color of object is blue .', 'color of object is green .', 'color of object is brown .', 'color of object is purple .', 'color of object is cyan .', 'color of object is yellow .'] 
-    labels_material = ['hard, reflective, cold to touch, rings when struck like metal .', 'flexible, soft, stretchy, bouncy, matte finish like rubber.']
+    labels_size = ['small', 'large']
+    labels_shape = ['cube', 'cylinder', 'sphere'] 
+    labels_material = ['metal', 'rubber']
 
     threshold = 0.3
     detector_id = "IDEA-Research/grounding-dino-tiny"

@@ -171,14 +171,9 @@ def generateEnvironment(num_objects, env_id):
 
 def main(args):
     
-   import kagglehub
-   # Specify the folder where you want the dataset
-   download_path = "/users/sbsh670/archive/clevr"  # <-- your desired path
-   path = kagglehub.dataset_download("timoboz/clevr-dataset", path=download_path)
-   print("Path to dataset files:", path)
-    #env_id = 0
-    #num_objects = [5,6,7,8,9]
-    #generateEnvironment(num_objects[0], env_id)
+    env_id = 0
+    num_objects = [5,6,7,8,9]
+    generateEnvironment(num_objects[0], env_id)
 
             
 if __name__ == "__main__":
