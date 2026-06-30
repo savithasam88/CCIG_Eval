@@ -1,6 +1,0 @@
-% C6 Existential-Universal: exists x. (Phi_sel(x) and forall y. (Phi_tar(y) -> Rel(x,y))). At least one candidate object (R1,P1=V1) must relate by D1 to every target object (R2,P2=V2).
-% Modeled with the standard ASP saturation pattern: a candidate "fails" if some target is not reached by D1; the constraint requires at least one non-failing candidate.
-ccig_c6_candidate(X1) :- object(X1), at(X1, R1'), hasProperty(X1, P1', V1').
-ccig_c6_target(Y) :- object(Y), at(Y, R2'), hasProperty(Y, P2', V2').
-ccig_c6_fails(X1) :- ccig_c6_candidate(X1), ccig_c6_target(Y), not hasRelationship(X1, Y, D1').
-:- #count { X1 : ccig_c6_candidate(X1), not ccig_c6_fails(X1) } = 0.

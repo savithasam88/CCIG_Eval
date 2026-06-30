@@ -1,0 +1,4 @@
+% C6 Existential-Universal: At least one candidate object (P1=V1, P2=V2) must relate by D1 to every target object (P3=V3, P4!=V4).
+c6_forbid_2_prop_counterexample(X) :- hasProperty(X, P1, V1), hasProperty(X, P2, V2), hasProperty(Y, P3, V3), not hasProperty(Y, P4, V4), not hasRelationship(X, Y, D1).
+c6_forbid_2_prop_satisfied :- hasProperty(X, P1, V1), hasProperty(X, P2, V2), not c6_forbid_2_prop_counterexample(X).
+:- not c6_forbid_2_prop_satisfied.
