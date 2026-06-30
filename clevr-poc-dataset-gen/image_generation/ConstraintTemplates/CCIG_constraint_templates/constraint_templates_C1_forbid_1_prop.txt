@@ -1,0 +1,2 @@
+% C1 Existential Object, with a negated literal: no object may have property P1=V1.
+:- object(X), hasProperty(X, P1', V1').
