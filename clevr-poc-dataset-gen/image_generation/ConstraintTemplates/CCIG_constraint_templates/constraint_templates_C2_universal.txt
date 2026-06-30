@@ -1,2 +1,2 @@
-% C2 Universal Object: Every object in region R1 must have property P1=V1.
-:- object(X), at(X, R1'), not hasProperty(X, P1', V1').
+% C2 Universal Object: Every object must have property P1=V1.
+:- object(X), not hasProperty(X, P1', V1').
