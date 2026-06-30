@@ -1,2 +1,0 @@
-% C3 Conditional Object, negated literal: every object in region R1 with P1=V1 must not have P2=V2.
-:- object(X), at(X, R1'), hasProperty(X, P1', V1'), hasProperty(X, P2', V2').

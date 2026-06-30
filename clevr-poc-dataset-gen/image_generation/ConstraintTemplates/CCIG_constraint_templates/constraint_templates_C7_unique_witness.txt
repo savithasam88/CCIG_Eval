@@ -1,2 +1,2 @@
 % C7 Universal-Existential composed with C8 Cardinality (exists exactly one witness): each trigger object X must have exactly one witness object Y satisfying the relation and filters.
-:- object(X), at(X, R1'), hasProperty(X, P1', V1'), #count { Y : object(Y), X != Y, at(Y, R2'), hasProperty(Y, P2', V2'), hasRelationship(Y, X, D1') } != 1.
+:- object(X), hasProperty(X, P1', V1'), #count { Y : object(Y), X != Y, hasProperty(Y, P2', V2'), hasRelationship(Y, X, D1') } != 1.
