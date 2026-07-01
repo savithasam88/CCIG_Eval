@@ -1,4 +1,4 @@
 % C9 Aggregate Comparison: Requires equal cardinality between two independently filtered subsets.
-ccig_coupling_left(N) :- N = #count { X : object(X), at(X, R1'), hasProperty(X, P1', V1') }.
-ccig_coupling_right(N) :- N = #count { Y : object(Y), at(Y, R2'), hasProperty(Y, P2', V2') }.
+ccig_coupling_left(N) :- N = #count { X : object(X), hasProperty(X, P1', V1') }.
+ccig_coupling_right(N) :- N = #count { Y : object(Y), hasProperty(Y, P2', V2') }.
 :- ccig_coupling_left(N), ccig_coupling_right(M), N != M.
