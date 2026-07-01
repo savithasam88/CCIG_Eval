@@ -1,2 +1,0 @@
-% C8 Cardinality, upper-bound case (k=1): at most one object in region R1 may have property P1=V1 (no two distinct objects share any value V1).
-:- object(X1), object(X2), X1 != X2, hasProperty(X1, P1', V1'), hasProperty(X2, P1', V1').
