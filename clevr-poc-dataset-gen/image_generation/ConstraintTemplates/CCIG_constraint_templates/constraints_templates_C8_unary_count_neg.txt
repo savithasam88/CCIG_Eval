@@ -1,0 +1,2 @@
+% C8 Cardinality: |{x : Phi(x)}| theta k. Exactly N1 objects satisfy the unary filter (P1!=V1) in region R1.
+:- #count{X: object(X), not hasProperty(X, P1', V1')} != N1'.
