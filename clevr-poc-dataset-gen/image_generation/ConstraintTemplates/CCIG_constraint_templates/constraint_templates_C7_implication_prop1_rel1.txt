@@ -1,2 +1,2 @@
-% C7 Universal-Existential: forall x. Phi(x) -> exists y. Rel(x,y). Every object matching (R1,P1=V1) must relate by D1 to some other object.
-:- object(X), at(X, R1'), hasProperty(X, P1', V1'), #count { Y : object(Y), X != Y, hasRelationship(X, Y, D1') } = 0.
+% C7 Universal-Existential: forall x. Phi(x) -> exists y. Rel(x,y). Every object X matching (P1=V1) there must exist a Y such that it relate by D1 to X.
+:- object(X), hasProperty(X, P1', V1'), #count { Y : object(Y), X != Y, hasRelationship(X, Y, D1') } = 0.
