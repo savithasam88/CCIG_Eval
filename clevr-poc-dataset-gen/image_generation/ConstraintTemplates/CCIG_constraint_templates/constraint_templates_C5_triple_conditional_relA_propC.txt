@@ -1,2 +1,2 @@
 % C5 Conditional (Subgraph): Every triple (X1,X2, X3) such that D1(X1, X2), D2(X2, X3) )must have (P1=V1) for X1 .
-:- object(X1), object(X2), X1 != X2, hasRelationship(X1, X2, D1'), hasRelationship(X2, X3, D2'), not hasProperty(X1, P1', V1').
+:- object(X1), object(X2), X1 != X2, hasRelationship(X1, X2, D1'), hasRelationship(X2, X3, D2'), not hasProperty(X1, P1', V1'). 
