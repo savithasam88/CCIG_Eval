@@ -1,0 +1,2 @@
+% C3 Conditional Object: Every object with P1'!=V1' must also have P2'=V2'.
+:- object(X), not hasProperty(X, P1', V1'), not hasProperty(X, P2', V2').
