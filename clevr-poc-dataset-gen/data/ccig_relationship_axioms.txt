@@ -1,5 +1,5 @@
 % Derive object-level spatial relations from region placement (for CCIG constraint checking).
-hasRelationship(X, Y, left) :- object(X), object(Y), X != Y, at(X, R1), at(Y, R2), left_R(R1, R2).
-hasRelationship(X, Y, right) :- object(X), object(Y), X != Y, at(X, R1), at(Y, R2), right_R(R1, R2).
-hasRelationship(X, Y, front) :- object(X), object(Y), X != Y, at(X, R1), at(Y, R2), front_R(R1, R2).
-hasRelationship(X, Y, behind) :- object(X), object(Y), X != Y, at(X, R1), at(Y, R2), behind_R(R1, R2).
+hasRelationship(X, Y, left) :- object(X), object(Y), X != Y, hasProperty(X, region, R1), hasProperty(Y, region, R2), left_R(R1, R2).
+hasRelationship(X, Y, right) :- object(X), object(Y), X != Y, hasProperty(X, region, R1), hasProperty(Y, region, R2), right_R(R1, R2).
+hasRelationship(X, Y, front) :- object(X), object(Y), X != Y, hasProperty(X, region, R1), hasProperty(Y, region, R2), front_R(R1, R2).
+hasRelationship(X, Y, behind) :- object(X), object(Y), X != Y, hasProperty(X, region, R1), hasProperty(Y, region, R2), behind_R(R1, R2).
