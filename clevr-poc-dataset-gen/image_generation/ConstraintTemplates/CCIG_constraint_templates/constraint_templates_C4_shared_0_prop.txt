@@ -1,2 +1,2 @@
-% C4 Existential (Subgraph): a 3-hop relational chain X1->X2->X3->X4 with specific properties and relations D1, D2, then D3 must exist.
-:- #count { (X1, X2, X3, X4) : object(X1), object(X2), object(X3), object(X4), X1 != X2, X2 != X3, X3 != X4, X1 != X3, X1 != X4, X2 != X4, hasProperty(X1, P1, V1), hasProperty(X2, P2, V2), hasProperty(X3, P3, V3), hasProperty(X4, P4, V4), hasRelationship(X1, X2, D1'), hasRelationship(X2, X3, D2'), hasRelationship(X3, X4, D3') } = 0.
+% C4 Existential (Subgraph): a shared hub object Z related by D1 to X1 and by D2 to X2 must exist.
+:- #count { (Z, X1, X2) : object(Z), object(X1), object(X2), Z != X1, Z != X2, X1 != X2, hasRelationship(Z, X1, D1'), hasRelationship(Z, X2, D2') } = 0.
