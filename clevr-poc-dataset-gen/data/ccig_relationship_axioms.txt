@@ -3,3 +3,20 @@ hasRelationship(X, Y, left) :- object(X), object(Y), X != Y, hasProperty(X, regi
 hasRelationship(X, Y, right) :- object(X), object(Y), X != Y, hasProperty(X, region, R1), hasProperty(Y, region, R2), right_R(R1, R2).
 hasRelationship(X, Y, front) :- object(X), object(Y), X != Y, hasProperty(X, region, R1), hasProperty(Y, region, R2), front_R(R1, R2).
 hasRelationship(X, Y, behind) :- object(X), object(Y), X != Y, hasProperty(X, region, R1), hasProperty(Y, region, R2), behind_R(R1, R2).
+
+
+
+hasRelationship(X, Y, left); hasRelationship(X, Y, right) :- object(X), object(Y), X != Y, hasProperty(X, region, R), hasProperty(Y, region, R).
+hasRelationship(X, Y, front); hasRelationship(X, Y, behind) :- object(X), object(Y), X != Y, hasProperty(X, region, R), hasProperty(Y, region, R).
+
+:- hasRelationship(X1, X2, R), hasRelationship(X2, X1, R), X1!=X2.
+
+
+
+hasRelationship(X1, X3, left) : hasRelationship(X1, X2, left), hasRelationship(X2, X3, left), X1!=X2, X2!=X3.
+hasRelationship(X1, X2, left) : hasRelationship(X2, X1, right).
+
+hasRelationship(X1, X3, behind) : hasRelationship(X1, X2, behind), hasRelationship(X2, X3, behind), X1!=X2, X2!=X3.
+hasRelationship(X1, X2, behind) : hasRelationship(X2, X1, front).
+
+

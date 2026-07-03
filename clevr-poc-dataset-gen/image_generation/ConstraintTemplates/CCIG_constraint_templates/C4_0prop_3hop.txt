@@ -1,0 +1,2 @@
+% C4 Existential (Subgraph): a 3-hop relational chain X1->X2->X3->X4 with relations D1', D2', then D3' must exist.
+:- #count { (X1, X2, X3, X4) : object(X1), object(X2), object(X3), object(X4), X1 != X2, X2 != X3, X3 != X4, X1 != X3, X1 != X4, X2 != X4, hasRelationship(X1, X2, D1'), hasRelationship(X2, X3, D2'), hasRelationship(X3, X4, D3') } = 0.

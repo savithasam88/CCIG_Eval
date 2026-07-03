@@ -1,2 +1,0 @@
-% C7 Universal-Existential: forall x. Phi(x) -> exists y. (Psi(y) and Rel(y,x)). Each trigger object (R1,P1=V1) needs a witness in region R2 with P2=V2 related by D1.
-:- object(X), hasProperty(X, P1', V1'), #count { Y : object(Y), X != Y, hasProperty(Y, P2', V2'), P2'!=P1', hasRelationship(Y, X, D1') } = 0.

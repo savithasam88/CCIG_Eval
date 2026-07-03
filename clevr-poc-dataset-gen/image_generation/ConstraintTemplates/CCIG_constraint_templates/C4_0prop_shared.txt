@@ -1,0 +1,2 @@
+% C4 Existential (Subgraph): a shared hub object Z related by D1' to X1 and by D2' to X2 must exist.
+:- #count { (Z, X1, X2) : object(Z), object(X1), object(X2), Z != X1, Z != X2, X1 != X2, hasRelationship(Z, X1, D1'), hasRelationship(Z, X2, D2') } = 0.

@@ -56,6 +56,7 @@ same_region(X,Y):- sameProperty(X, Y, region).
 1{hasProperty(X, size, V):property(size, V)}1 :- object(X).
 1{hasProperty(X, region, V):property(region, V)}1 :- object(X).
 
+
 :- sameProperty(X1, X2, color), sameProperty(X1, X2, material), sameProperty(X1, X2, size), sameProperty(X1, X2, shape), sameProperty(X1, X2, region), object(X1), object(X2), X1!=X2.
 exceed_region_capacity(R) :- #count{X: object(X), hasProperty(X, region, R)} >= 4, property(region, R).
 :- exceed_region_capacity(_).
