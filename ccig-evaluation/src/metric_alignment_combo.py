@@ -731,7 +731,7 @@ def compute_human_vlm_alignment(
 
 def compute_human_soft_alignment(
     human_res: dict[str, Any],
-    soft_tifa_res: dict[str, Any],
+    soft_tifa_res: dict[str, Any], type_score:str,
 ) -> dict[str, Any]:
     """
     Compute alignment between Soft-TIFA scores and human evaluation
@@ -807,7 +807,7 @@ def compute_human_soft_alignment(
             continue
 
         soft_tifa_score = result.get(
-            "score_am"
+            "score_"+str(type_score)
         )
 
         if soft_tifa_score is None:

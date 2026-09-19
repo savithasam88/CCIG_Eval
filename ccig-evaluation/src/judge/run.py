@@ -35,9 +35,10 @@ def run_judge(items: list[MatchedItem], judge: VLMJudge, out_path: str | Path, m
                     success=False,
                     error='No image generated',
                 ))
-    
+        
     for item in items:
         try:
+            
             image = Image.open(item.image_path).convert("RGB")
             # to study 
             setup_text = scene_setup_text(item.record.number_of_objects, item.record.domain, with_background=is_closed_model)

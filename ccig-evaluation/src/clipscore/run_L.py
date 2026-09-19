@@ -35,9 +35,13 @@ def run_clipscore(items: list[MatchedItem], domain: str, checkpoint: str, out_pa
 
     results: list[ClipScoreResult] = []
     #find error in generated from manifest - no image generated cases
+    
+    
     with open(manifest, "r") as f:
         manifest = [json.loads(line) for line in f if line.strip()]
+    
     for item in manifest:
+        
         if item["error"] is not None:
             print('No image generated:', item['id'])
             results.append(
@@ -51,12 +55,15 @@ def run_clipscore(items: list[MatchedItem], domain: str, checkpoint: str, out_pa
                     cosine=-1,
                     success=False,
                     error='No image generated',))
-    model, preprocess = longclip.load(checkpoint,device=device,)
+        
 
+    model, preprocess = longclip.load(checkpoint,device=device,)
+        
     model.eval()
     
     len_77 = 0
     for item in items:
+         
         try:
             
             image = Image.open(item.image_path).convert("RGB")

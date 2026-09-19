@@ -9,7 +9,7 @@ from .attributes.registry import build_attribute_classifier
 from .crop import crop_and_neutralize, make_object_views
 from .detectors.registry import build_detector
 from .regions import bbox_center, region_of
-from .scene_graph import build_scene, build_scene_facts, to_graph_dict
+from .scene_graph import build_scene_facts, to_graph_dict
 from .types import DetectedObject
 import json
 import numpy as np
@@ -160,6 +160,7 @@ def is_empty_white_image(image, threshold=245, fraction=0.99):
 
     return white.mean() >= fraction
 
+
 def run_perception(
     items: list[MatchedItem],
     domain: str,
@@ -178,7 +179,9 @@ def run_perception(
     results: list[PerceptionResult] = []
     with open(manifest, "r") as f:
         manifest = [json.loads(line) for line in f if line.strip()]
+    
     for item in manifest:
+        
         if item["error"] is not None:
             print('No image generated:', item['id'])
             results.append(
@@ -195,8 +198,10 @@ def run_perception(
                     success=False,
                     error='No image generated',
                 ))
+       
 
     for item in items:
+        
         try:
             image = Image.open(item.image_path).convert("RGB")
             print('Processing:', item.id, flush=True)
@@ -250,6 +255,7 @@ def run_perception(
                 continue
             
             objects = _perceive_scene(image, domain, domain_module, detector, classifiers)
+            
             if (len(objects) != item.record.number_of_objects):
                 print('Number of objects do not match')
                 if item.record.status == 'SAT':

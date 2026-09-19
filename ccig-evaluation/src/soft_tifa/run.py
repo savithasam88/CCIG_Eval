@@ -53,6 +53,7 @@ def run_soft_tifa(
                     success=False,
                     error='No image generated',
                 ))
+        
     
     for item in items:
         subqa = item.record.subqa

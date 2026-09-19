@@ -828,16 +828,28 @@ def run_analysis(
     vlm_judge_res=vlm_judge_res,
     roc_plot_path=roc_vlm_plot,)
 
-    roc_soft_plot = (
+    roc_soft_plot_am = (
     Path(analysis_out).parent
     / "plots"
-    / "soft_roc.png"
+    / "soft_roc_am.png"
     )
     
-    soft_human_alignment = compute_human_soft_alignment(
+    soft_human_alignment_am = compute_human_soft_alignment(
     human_res=human_res,
     soft_tifa_res=tifa_res,
-    roc_plot_path=roc_soft_plot,)
+    roc_plot_path=roc_soft_plot_am, type_score = 'am')
+    
+    roc_soft_plot_gm = (
+    Path(analysis_out).parent
+    / "plots"
+    / "soft_roc_gm.png"
+    )
+    
+    soft_human_alignment_gm = compute_human_soft_alignment(
+    human_res=human_res,
+    soft_tifa_res=tifa_res,
+    roc_plot_path=roc_soft_plot_gm, type_score = 'gm')
+   
     
     roc_perc_plot = (
     Path(analysis_out).parent
@@ -855,8 +867,11 @@ def run_analysis(
     vlm_alignment_out = Path(analysis_out).with_name(
     "vlm_human_alignment.json")
 
-    soft_alignment_out = Path(analysis_out).with_name(
-    "soft_human_alignment.json")
+    soft_alignment_out_am = Path(analysis_out).with_name(
+    "soft_human_alignment_am.json")
+
+    soft_alignment_out_gm = Path(analysis_out).with_name(
+    "soft_human_alignment_gm.json")
 
     perc_alignment_out = Path(analysis_out).with_name(
     "perc_human_alignment.json")
@@ -873,12 +888,18 @@ def run_analysis(
             f,
             indent=4,)
     
-    with open(soft_alignment_out, "w") as f:
+    with open(soft_alignment_out_am, "w") as f:
         json.dump(
-            soft_human_alignment,
+            soft_human_alignment_am,
             f,
             indent=4,)
 
+    with open(soft_alignment_out_gm, "w") as f:
+        json.dump(
+            soft_human_alignment_gm,
+            f,
+            indent=4,)
+    
     with open(perc_alignment_out, "w") as f:
         json.dump(
             perc_human_alignment,
@@ -951,7 +972,8 @@ def run_analysis(
         "short_long_consistency": consistency,#
         "clip_human_alignment": clip_human_alignment,
         "vlm_human_alignment": vlm_human_alignment,
-        "soft_human_alignment": soft_human_alignment
+        "soft_human_alignment_am": soft_human_alignment_am,
+        "soft_human_alignment_gm": soft_human_alignment_gm,
     }
 
     # =========================================================================

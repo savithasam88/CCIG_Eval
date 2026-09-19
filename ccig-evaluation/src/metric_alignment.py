@@ -1076,7 +1076,7 @@ def compute_human_vlm_alignment(
 def compute_human_soft_alignment(
     human_res: dict[str, Any],
     soft_tifa_res: dict[str, Any],
-    roc_plot_path: str | Path,
+    roc_plot_path: str | Path, type_score: str,
 ) -> dict[str, Any]:
     """
     Compute alignment between soft tifa scores and human evaluation.
@@ -1166,7 +1166,7 @@ def compute_human_soft_alignment(
             result["prompt_field"]
         ).lower()
 
-        soft_tifa_score = result.get("score_am")
+        soft_tifa_score = result.get("score_"+str(type_score))
 
         if soft_tifa_score is None:
             continue
@@ -1174,6 +1174,8 @@ def compute_human_soft_alignment(
         soft_tifa_by_key[
             (result_id, prompt_field)
         ] = float(soft_tifa_score)
+
+        
 
     # ==================================================================
     # Match human and soft tifa results
@@ -1187,13 +1189,15 @@ def compute_human_soft_alignment(
         "long": [],
     }
 
+    
+
     for key, human_score in human_by_key.items():
 
         soft_tifa_score = soft_tifa_by_key.get(key)
-
+        
         if soft_tifa_score is None:
             continue
-
+        
         result_id, prompt_field = key
 
         if prompt_field not in matched:
@@ -1205,6 +1209,7 @@ def compute_human_soft_alignment(
                 human_score,
             )
         )
+        
 
     # ==================================================================
     # Calculate metrics

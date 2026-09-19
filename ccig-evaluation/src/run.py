@@ -58,7 +58,6 @@ def main() -> None:
 
     
     args = parser.parse_args()
-    print('args:', args.combo)
     items = match_images_to_prompts(args.images_dir, args.prompts_file)
     if args.limit is not None:
         items = items[: args.limit]
